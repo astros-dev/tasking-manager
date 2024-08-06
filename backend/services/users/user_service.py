@@ -37,7 +37,7 @@ from backend.services.messaging.template_service import (
 )
 from backend.db import get_session
 session = get_session()
-
+from databases import Database
 
 user_filter_cache = TTLCache(maxsize=1024, ttl=600)
 
@@ -51,9 +51,16 @@ class UserServiceError(Exception):
 
 
 class UserService:
+    # @staticmethod
+    # async def get_user_by_id(user_id: int, session) -> User:
+    #     user = await User.get_by_id(user_id, session)
+    #     if user is None:
+    #         raise NotFound(sub_code="USER_NOT_FOUND", user_id=user_id)
+    #     return user
+
     @staticmethod
-    async def get_user_by_id(user_id: int, session) -> User:
-        user = await User.get_by_id(user_id, session)
+    async def get_user_by_id(user_id: int, db: Database) -> User:
+        user = await User.get_by_id(user_id, db)
         if user is None:
             raise NotFound(sub_code="USER_NOT_FOUND", user_id=user_id)
         return user
@@ -505,9 +512,9 @@ class UserService:
         return User.filter_users(username, project_id, page)
 
     @staticmethod
-    async def is_user_an_admin(user_id: int, session) -> bool:
+    async def is_user_an_admin(user_id: int, db: Database) -> bool:
         """Is the user an admin"""
-        user = await UserService.get_user_by_id(user_id, session)
+        user = await UserService.get_user_by_id(user_id, db)
         if UserRole(user.role) == UserRole.ADMIN:
             return True
 
