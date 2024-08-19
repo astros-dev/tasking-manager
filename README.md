@@ -38,7 +38,7 @@ Status | Feature
 || UI/UX improvements
 
 
- 
+
 
 ## Developers
 
